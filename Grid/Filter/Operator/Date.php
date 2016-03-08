@@ -2,7 +2,7 @@
 
 namespace PedroTeixeira\Bundle\GridBundle\Grid\Filter\Operator;
 
-use Symfony\Component\Locale\Stub\DateFormat\FullTransformer;
+use Symfony\Component\Intl\DateFormatter\DateFormat\FullTransformer;
 
 /**
  * Date
@@ -18,6 +18,7 @@ class Date extends OperatorAbstract
             $this->container->getParameter('pedro_teixeira_grid.date.date_format'),
             $this->container->getParameter('locale')
         );
+
         $date = new \DateTime();
         $transformer->parse($date, $value);
 

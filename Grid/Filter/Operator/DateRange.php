@@ -2,7 +2,7 @@
 
 namespace PedroTeixeira\Bundle\GridBundle\Grid\Filter\Operator;
 
-use Symfony\Component\Locale\Stub\DateFormat\FullTransformer;
+use Symfony\Component\Intl\DateFormatter\DateFormat\FullTransformer;
 
 /**
  * DateRange

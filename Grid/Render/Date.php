@@ -2,7 +2,7 @@
 
 namespace PedroTeixeira\Bundle\GridBundle\Grid\Render;
 
-use Symfony\Component\Locale\Stub\DateFormat\FullTransformer;
+use Symfony\Component\Intl\DateFormatter\DateFormat\FullTransformer;
 
 /**
  * Render Date

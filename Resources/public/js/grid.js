@@ -1,3 +1,5 @@
+var run = false;
+
 !function ($) {
 
     /* GRID PUBLIC CLASS DEFINITION
@@ -24,6 +26,12 @@
         constructor:Grid
 
         , ajax:function () {
+
+            console.log("run: " + run);
+            if(run) {
+                return;
+            }
+            run = true;
 
             var filters = this.$element.find('form').serializeArray(),
                 tbody = this.$element.find('table').find('tbody.row-result'),
@@ -84,6 +92,7 @@
                     }
 
                     tbody.html(html)
+                    run = false;
                 },
                 error:function (error) {
                     thisClass.gridUnlock()
@@ -92,6 +101,7 @@
                     tbody.html('')
 
                     alert('Error: ' + error.statusText)
+                    run = false;
                 }
             })
 

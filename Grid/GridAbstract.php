@@ -84,12 +84,12 @@ abstract class GridAbstract
      *
      * @return \PedroTeixeira\Bundle\GridBundle\Grid\GridAbstract
      */
-    public function __construct(\Symfony\Component\DependencyInjection\Container $container)
+    public function __construct(\Symfony\Component\DependencyInjection\Container $container, \Symfony\Component\HttpFoundation\Request $request)
     {
         $this->container = $container;
+        $this->request = $request;
 
         $this->router = $this->container->get('router');
-        $this->request = $this->container->get('request');
         $this->templating = $this->container->get('templating');
 
         $this->columns = array();
