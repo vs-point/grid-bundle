@@ -1,8 +1,8 @@
-# pedro-teixeira/grid-bundle
+# pedro-teixeira/grid-bundle (Symfony3 fork)
 
 [![Build Status](http://img.shields.io/travis/pedro-teixeira/grid-bundle.svg?style=flat)](https://travis-ci.org/pedro-teixeira/grid-bundle) [![Version](http://img.shields.io/packagist/v/pedro-teixeira/grid-bundle.svg?style=flat)](https://packagist.org/packages/pedro-teixeira/grid-bundle) [![Downloads](http://img.shields.io/packagist/dt/pedro-teixeira/grid-bundle.svg?style=flat)](https://packagist.org/packages/pedro-teixeira/grid-bundle) [![License](http://img.shields.io/packagist/l/pedro-teixeira/grid-bundle.svg?style=flat)](https://packagist.org/packages/pedro-teixeira/grid-bundle)
 
-> Ajax grid for Symfony2
+> Ajax grid for Symfony3
 
 ## Example
 
