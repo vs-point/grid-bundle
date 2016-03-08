@@ -158,6 +158,7 @@
     namespace PedroTeixeira\Bundle\TestBundle\Controller;
 
     use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+    use Symfony\Component\HttpFoundation\Request;
 
     use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
     use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -175,14 +176,14 @@
           *
           * @return array
           */
-        public function indexAction()
+        public function indexAction(Request $request)
         {
             /** @var \Doctrine\ORM\EntityRepository $repository */
             $repository = $this->getDoctrine()->getRepository('PedroTeixeiraTestBundle:TestEntity');
             $queryBuilder = $repository->createQueryBuilder('r');
 
             /** @var \PedroTeixeira\Bundle\TestBundle\Grid\TestGrid $grid */
-            $grid = $this->get('pedroteixeira.grid')->createGrid('\PedroTeixeira\Bundle\TestBundle\Grid\TestGrid');
+            $grid = $this->get('pedroteixeira.grid')->createGrid('\PedroTeixeira\Bundle\TestBundle\Grid\TestGrid', $request);
             $grid->setQueryBuilder($queryBuilder);
 
             if ($grid->isResponseAnswer()) {
