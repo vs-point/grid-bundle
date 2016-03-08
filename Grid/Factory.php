@@ -24,15 +24,17 @@ class Factory
 
     /**
      * @param string $gridClassName The name of the Grid descendant class that will be instantiated
+     * @param \Symfony\Component\HttpFoundation\Request $request
      *
      * @return \PedroTeixeira\Bundle\GridBundle\Grid\GridAbstract
+     *
      */
-    public function createGrid($gridClassName)
+    public function createGrid($gridClassName, \Symfony\Component\HttpFoundation\Request $request)
     {
         $gridClass = new \ReflectionClass($gridClassName);
 
         /* @var \PedroTeixeira\Bundle\GridBundle\Grid\GridAbstract $grid */
-        $grid = $gridClass->newInstance($this->container);
+        $grid = $gridClass->newInstance($this->container, $request);
         $grid->setupGrid();
 
         return $grid;

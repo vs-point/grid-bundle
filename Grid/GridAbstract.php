@@ -81,6 +81,7 @@ abstract class GridAbstract
 
     /**
      * @param \Symfony\Component\DependencyInjection\Container $container
+     * @param \Symfony\Component\HttpFoundation\Request $request
      *
      * @return \PedroTeixeira\Bundle\GridBundle\Grid\GridAbstract
      */
