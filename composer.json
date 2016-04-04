@@ -1,7 +1,7 @@
 {
-  "name" : "pedro-teixeira/grid-bundle",
+  "name" : "pedro-teixeira/grid-bundle-s3",
   "type" : "symfony-bundle",
-  "description" : "Ajax grid for Symfony2",
+  "description" : "Ajax grid for Symfony3",
   "keywords" : [
     "datagrid",
     "grid"
