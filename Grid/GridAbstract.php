@@ -8,6 +8,8 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Grid Abstract
@@ -15,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class GridAbstract
 {
     /**
-     * @var \Symfony\Component\DependencyInjection\Container
+     * @var Container
      */
     protected $container;
 
@@ -25,7 +27,7 @@ abstract class GridAbstract
     protected $router;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\Request
+     * @var Request
      */
     protected $request;
 
@@ -80,12 +82,12 @@ abstract class GridAbstract
     abstract public function setupGrid();
 
     /**
-     * @param \Symfony\Component\DependencyInjection\Container $container
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param Container $container
+     * @param Request $request
      *
      * @return \PedroTeixeira\Bundle\GridBundle\Grid\GridAbstract
      */
-    public function __construct(\Symfony\Component\DependencyInjection\Container $container, \Symfony\Component\HttpFoundation\Request $request)
+    public function __construct(Container $container, Request $request)
     {
         $this->container = $container;
         $this->request = $request;
@@ -110,7 +112,7 @@ abstract class GridAbstract
     }
 
     /**
-     * @return \Symfony\Component\DependencyInjection\Container
+     * @return Container
      */
     public function getContainer()
     {
@@ -370,24 +372,24 @@ abstract class GridAbstract
 
                     $rowColumn = $row[$column->getField()];
 
-                // Array scalar
+                    // Array scalar
                 } elseif (array_key_exists(0, $row) && array_key_exists($column->getField(), $row[0])) {
 
                     $rowColumn = $row[0][$column->getField()];
 
-                // Object
+                    // Object
                 } elseif (method_exists($row, 'get' . ucfirst($column->getField()))) {
 
                     $method = 'get' . ucfirst($column->getField());
                     $rowColumn = $row->$method();
 
-                // Object scalar
+                    // Object scalar
                 } elseif (array_key_exists(0, $row) && method_exists($row[0], 'get' . ucfirst($column->getField()))) {
 
                     $method = 'get' . ucfirst($column->getField());
                     $rowColumn = $row[0]->$method();
 
-                // Array
+                    // Array
                 } elseif ($column->getTwig()) {
 
                     $rowColumn = $this->templating->render(
