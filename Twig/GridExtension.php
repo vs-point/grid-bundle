@@ -2,9 +2,12 @@
 
 namespace PedroTeixeira\Bundle\GridBundle\Twig;
 
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig_Extension;
 use Twig_Environment;
-use Twig_TemplateInterface;
+use Twig_Function;
+use Twig_TemplateWrapper as Twig_Template;
 
 use PedroTeixeira\Bundle\GridBundle\Grid\GridView;
 
@@ -24,7 +27,7 @@ class GridExtension extends Twig_Extension
     protected $environment;
 
     /**
-     * @var Twig_TemplateInterface[]
+     * @var Twig_Template[]
      */
     protected $templates;
 
@@ -36,44 +39,26 @@ class GridExtension extends Twig_Extension
     /**
      * Construct
      *
-     * @param \Symfony\Component\DependencyInjection\Container $container Container
-     */
-    public function __construct(\Symfony\Component\DependencyInjection\Container $container)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * Init runtime
-     *
+     * @param ContainerInterface $container
      * @param Twig_Environment $environment
      */
-    public function initRuntime(Twig_Environment $environment)
+    public function __construct(ContainerInterface $container, Twig_Environment $environment)
     {
+        $this->container = $container;
         $this->environment = $environment;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return 'pedroteixeira_grid_extension';
     }
 
     /**
      * Template Loader
      *
-     * @return Twig_TemplateInterface[]
+     * @return Twig_Template[]
      *
      * @throws \Exception
      */
     protected function getTemplates()
     {
         if (empty($this->templates)) {
-            $this->templates[] = $this->environment->loadTemplate($this::DEFAULT_TEMPLATE);
+            $this->templates[] = $this->environment->load($this::DEFAULT_TEMPLATE);
         }
 
         return $this->templates;
@@ -91,16 +76,10 @@ class GridExtension extends Twig_Extension
      */
     protected function renderBlock($name, $parameters)
     {
-        /** @var Twig_TemplateInterface $template */
+        /** @var Twig_Template $template */
         foreach ($this->getTemplates() as $template) {
             if ($template->hasBlock($name)) {
-
-                $context = array_merge(
-                    $template->getEnvironment()->getGlobals(),
-                    $parameters
-                );
-
-                return $template->renderBlock($name, $context);
+                return $template->renderBlock($name, $parameters);
             }
         }
 
@@ -116,7 +95,7 @@ class GridExtension extends Twig_Extension
      */
     protected function hasBlock($name)
     {
-        /** @var Twig_TemplateInterface $template */
+        /** @var Twig_Template $template */
         foreach ($this->getTemplates() as $template) {
             if ($template->hasBlock($name)) {
                 return true;
@@ -133,29 +112,11 @@ class GridExtension extends Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
-            'pedroteixeira_grid' => new \Twig_Function_Method(
-                $this,
-                'renderGrid',
-                array(
-                    'is_safe' => array('html')
-                )
-            ),
-            'pedroteixeira_grid_html' => new \Twig_Function_Method(
-                $this,
-                'renderHtmlGrid',
-                array(
-                    'is_safe' => array('html')
-                )
-            ),
-            'pedroteixeira_grid_js' => new \Twig_Function_Method(
-                $this,
-                'renderJsGrid',
-                array(
-                    'is_safe' => array('html')
-                )
-            )
-        );
+        return [
+            new Twig_Function('pedroteixeira_grid', [$this, 'renderGrid'], ['is_safe' => array('html')]),
+            new Twig_Function('pedroteixeira_grid_js',  [$this, 'renderJsGrid'], ['is_safe' => array('html')]),
+            new Twig_Function('pedroteixeira_grid_html',   [$this, 'renderHtmlGrid'], ['is_safe' => array('html')]),
+        ];
     }
 
     /**

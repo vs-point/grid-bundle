@@ -38,13 +38,13 @@ class DateRange extends Date
             $html .= '<script type="text/javascript">$(document).ready(function () {$("#' .
                 $this->getId() . 'from").datepicker(); $("#' . $this->getId() . 'to").datepicker()})</script>';
         } else {
-            $html  = '<input class="date-input" name="' . $this->getIndex() . '[]" id="' . $this->getId() .
-                'from" type="date" placeholder="' . $this->getPlaceholder() . '" value="' . $this->getValue() . '"> ';
+            $html  = '<input class="date-input datepicker" name="' . $this->getIndex() . '[]" id="' . $this->getId() .
+                'from" placeholder="' . $this->getPlaceholder() . '" value="' . $this->getValue() . '"> ';
 
             $html .= $this->getInputSeparator();
 
-            $html .= '<input class="date-input" name="' . $this->getIndex() . '[]" id="' . $this->getId() .
-                'to" type="date" placeholder="' . $this->getPlaceholder() . '" value="' . $this->getValue() . '">';
+            $html .= '<input class="date-input datepicker" name="' . $this->getIndex() . '[]" id="' . $this->getId() .
+                'to" placeholder="' . $this->getPlaceholder() . '" value="' . $this->getValue() . '">';
         }
 
         return $html;

@@ -28,9 +28,11 @@ var run = false;
         , ajax:function () {
 
             console.log("run: " + run);
-            if(run) {
-                return;
-            }
+            // TODO
+            // if(run) {
+            //     console.log("run: is true, stopping");
+            //     return;
+            // }
             run = true;
 
             var filters = this.$element.find('form').serializeArray(),
@@ -77,14 +79,22 @@ var run = false;
                     if (data.rows.length > 0) {
                         emptyTbody.hide()
                         $.each(data.rows, function (i, item) {
-                            html += '<tr>'
+                            html += '<tr class="clickable-row">';
+
+                            var first_iteration = true;
+
                             $.each(item, function (i, value) {
                                 if (value == null) {
                                     value = ''
                                 }
 
-                                html += '<td>' + value + '</td>'
-                            })
+                                if (first_iteration) {
+                                    html += '<td style="display:none;">' + value + '</td>';
+                                    first_iteration = false;
+                                } else {
+                                    html += '<td>' + value + '</td>'
+                                }
+                            });
                             html += '</tr>'
                         })
                     } else {
@@ -93,6 +103,11 @@ var run = false;
 
                     tbody.html(html)
                     run = false;
+
+                    $(".clickable-row").click(function (event) {
+                        var id = $(this).children(":first").html();
+                        window.location.href = 'request/detail/'+id;
+                    });
                 },
                 error:function (error) {
                     thisClass.gridUnlock()

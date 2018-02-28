@@ -6,6 +6,6 @@ services:
 
     pedroteixeira.twig.grid:
         class: PedroTeixeira\Bundle\GridBundle\Twig\GridExtension
-        arguments: [ '@service_container' ]
         tags:
             - { name: twig.extension }
+        arguments: ['@service_container', '@twig']

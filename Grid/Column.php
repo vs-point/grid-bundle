@@ -63,6 +63,11 @@ class Column
     protected $container;
 
     /**
+     * @var bool
+     */
+    protected $hidden;
+    
+    /**
      * @param \Symfony\Component\DependencyInjection\Container $container
      * @param string                                           $name
      */
@@ -342,4 +347,19 @@ class Column
             );
         }
     }
+
+    public function setHidden($bool)
+    {
+        $this->hidden = $bool;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHidden()
+    {
+        return $this->hidden;
+    }
+
+
 }

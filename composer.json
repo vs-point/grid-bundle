@@ -16,10 +16,11 @@
     }
   ],
   "require" : {
-    "php" : ">=5.3",
+    "php" : ">=7.0",
     "symfony/framework-bundle" : "~3",
     "symfony/intl": "~3",
-    "doctrine/orm" : "~2.5"
+    "doctrine/orm" : "~2.5",
+    "twig/twig": "^2.0"
   },
   "require-dev" : {
     "squizlabs/php_codesniffer" : "~1"

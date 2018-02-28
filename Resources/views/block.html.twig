@@ -7,14 +7,15 @@
                     <tr id="row-filters-label">
                         {% for column in view.grid.columns %}
                             {%  if column.exportOnly == false %}
-                                <th id="{{ column.field }}" {% if column.sortable %}data-index="{{ column.index }}"{% endif %}>{{ column.name }}</th>
+                                <th {% if column.hidden %}style="display:none;"{% endif %}
+                                    id="{{ column.field }}" {% if column.sortable %}data-index="{{ column.index }}"{% endif %}>{{ column.name }}</th>
                             {% endif %}
                         {% endfor %}
                     </tr>
                     <tr class="row-filters">
                         {% for column in view.grid.columns %}
                             {% if column.exportOnly == false %}
-                                <th>{{ column.renderFilter | raw }}</th>
+                                <th {% if column.hidden %}style="display:none;"{% endif %}>{{ column.renderFilter | raw }}</th>
                             {% endif %}
                         {% endfor %}
                     </tr>

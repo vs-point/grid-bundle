@@ -37,7 +37,7 @@ abstract class GridAbstract
     protected $queryBuilder;
 
     /**
-     * @var \Twig_TemplateInterface
+     * @var \Twig_TemplateWrapper
      */
     protected $templating;
 
@@ -498,17 +498,21 @@ abstract class GridAbstract
                     throw new \Exception('Export not allowed');
                 }
 
-                $exportFile = $this->getExportFileName();
-
-                $response = new Response();
-                $response->headers->set('Content-Type', 'text/csv');
-                $response->headers->set('Content-Disposition', 'attachment; filename="' . basename($exportFile) . '"');
-                $response->setContent(file_get_contents($exportFile));
-
-                return $response;
+                return $this->downloadExportedFile();
             } else {
                 return new GridView($this, $this->container);
             }
         }
+    }
+
+    public function downloadExportedFile(){
+        $exportFile = $this->getExportFileName();
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . basename($exportFile) . '"');
+        $response->setContent(file_get_contents($exportFile));
+
+        return $response;
     }
 }
