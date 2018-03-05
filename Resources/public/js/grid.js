@@ -45,6 +45,7 @@ var run = false;
 
             $.ajax({
                 url:this.ajaxUrl,
+                detail:this.detailUrl,
                 type:'get',
                 data:{
                     'page':this.page,
@@ -106,7 +107,7 @@ var run = false;
 
                     $(".clickable-row").click(function (event) {
                         var id = $(this).children(":first").html();
-                        window.location.href = 'request/detail/'+id;
+                        window.location.href = this.detail+'/'+id;
                     });
                 },
                 error:function (error) {
