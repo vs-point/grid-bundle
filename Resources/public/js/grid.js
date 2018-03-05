@@ -10,6 +10,7 @@ var run = false;
         this.$element = $(element)
         this.options = $.extend({}, $.fn.grid.defaults, options)
         this.ajaxUrl = this.options.ajaxUrl || this.ajaxUrl
+        this.detailUrl = this.options.detailUrl || this.detailUrl
         this.limit = this.options.limit || this.limit
         this.exportFlag = false
         this.sortIndex = ''
@@ -107,7 +108,7 @@ var run = false;
 
                     $(".clickable-row").click(function (event) {
                         var id = $(this).children(":first").html();
-                        window.location.href = this.detail+'/'+id;
+                        window.location.href = thisClass.detailUrl+'/'+id;
                     });
                 },
                 error:function (error) {
