@@ -1,5 +1,5 @@
 {
-  "name" : "symon-white/grid-bundle-s3",
+  "name" : "vs-point/grid-bundle",
   "type" : "symfony-bundle",
   "description" : "Ajax grid for Symfony3",
   "keywords" : [
