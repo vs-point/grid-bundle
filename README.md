@@ -1,12 +1,12 @@
-# pedro-teixeira/grid-bundle (Symfony3 fork)
+# vs-point/grid-bundle (Symfony3 fork)
 
-[![Build Status](http://img.shields.io/travis/pedro-teixeira/grid-bundle.svg?style=flat)](https://travis-ci.org/pedro-teixeira/grid-bundle) [![Version](http://img.shields.io/packagist/v/pedro-teixeira/grid-bundle.svg?style=flat)](https://packagist.org/packages/pedro-teixeira/grid-bundle) [![Downloads](http://img.shields.io/packagist/dt/pedro-teixeira/grid-bundle.svg?style=flat)](https://packagist.org/packages/pedro-teixeira/grid-bundle) [![License](http://img.shields.io/packagist/l/pedro-teixeira/grid-bundle.svg?style=flat)](https://packagist.org/packages/pedro-teixeira/grid-bundle)
+[![Build Status](http://img.shields.io/travis/vs-point/grid-bundle.svg?style=flat)](https://travis-ci.org/vs-point/grid-bundle) [![Version](http://img.shields.io/packagist/v/vs-point/grid-bundle.svg?style=flat)](https://packagist.org/packages/vs-point/grid-bundle) [![Downloads](http://img.shields.io/packagist/dt/vs-point/grid-bundle.svg?style=flat)](https://packagist.org/packages/vs-point/grid-bundle) [![License](http://img.shields.io/packagist/l/vs-point/grid-bundle.svg?style=flat)](https://packagist.org/packages/vs-point/grid-bundle)
 
 > Ajax grid for Symfony3
 
 ## Example
 
-![](https://github.com/pedro-teixeira/grid-bundle/blob/master/Resources/doc/usage.gif)
+![](https://github.com/vs-point/grid-bundle/blob/master/Resources/doc/usage.gif)
 
 *Using [Twitter Bootstrap](http://twitter.github.com/bootstrap/), [jQuery Bootstrap Datepicker](http://www.eyecon.ro/bootstrap-datepicker/) and fake data with [Faker](https://github.com/fzaninotto/faker).*
 
@@ -23,7 +23,7 @@
 
     ```json
     "require": {
-        "pedro-teixeira/grid-bundle":"dev-master"
+        "vs-point/grid-bundle":"dev-master"
     }
     ```
 
@@ -217,10 +217,10 @@
 
 ## Understanding
 
-* [Grid](https://github.com/pedro-teixeira/grid-bundle/tree/master/Resources/doc/grid.md)
-* [Column](https://github.com/pedro-teixeira/grid-bundle/tree/master/Resources/doc/column.md)
-     * [Render](https://github.com/pedro-teixeira/grid-bundle/tree/master/Resources/doc/column/render.md)
-     * [Filter](https://github.com/pedro-teixeira/grid-bundle/tree/master/Resources/doc/column/filter.md)
+* [Grid](https://github.com/vs-point/grid-bundle/tree/master/Resources/doc/grid.md)
+* [Column](https://github.com/vs-point/grid-bundle/tree/master/Resources/doc/column.md)
+     * [Render](https://github.com/vs-point/grid-bundle/tree/master/Resources/doc/column/render.md)
+     * [Filter](https://github.com/vs-point/grid-bundle/tree/master/Resources/doc/column/filter.md)
 
 ## Continuous integration
 
