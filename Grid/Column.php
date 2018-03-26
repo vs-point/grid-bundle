@@ -66,6 +66,9 @@ class Column
      * @var bool
      */
     protected $hidden;
+
+    /** @var string */
+    protected $url;
     
     /**
      * @param \Symfony\Component\DependencyInjection\Container $container
@@ -348,9 +351,11 @@ class Column
         }
     }
 
-    public function setHidden($bool)
+    public function setHidden($bool): Column
     {
         $this->hidden = $bool;
+
+        return $this;
     }
 
     /**
@@ -359,6 +364,24 @@ class Column
     public function getHidden()
     {
         return $this->hidden;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setUrl(string $url): Column
+    {
+        $this->url = $url;
+
+        return $this;
     }
 
 

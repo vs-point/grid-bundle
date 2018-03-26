@@ -404,6 +404,10 @@ abstract class GridAbstract
                     ->setValue($rowColumn)
                     ->setStringOnly($this->isExport())
                     ->render();
+
+                if ($column->getUrl()){
+                    $response['url'][$key] = $column->getUrl();
+                }
             }
 
             $response['rows'][$key] = $rowValue;

@@ -10,7 +10,6 @@ var run = false;
         this.$element = $(element)
         this.options = $.extend({}, $.fn.grid.defaults, options)
         this.ajaxUrl = this.options.ajaxUrl || this.ajaxUrl
-        this.detailUrl = this.options.detailUrl || this.detailUrl
         this.limit = this.options.limit || this.limit
         this.exportFlag = false
         this.sortIndex = ''
@@ -46,7 +45,6 @@ var run = false;
 
             $.ajax({
                 url:this.ajaxUrl,
-                detail:this.detailUrl,
                 type:'get',
                 data:{
                     'page':this.page,
@@ -80,8 +78,16 @@ var run = false;
 
                     if (data.rows.length > 0) {
                         emptyTbody.hide()
-                        $.each(data.rows, function (i, item) {
-                            html += '<tr class="clickable-row">';
+
+
+                        $.each(data.rows, function (idx, item) {
+
+                            html += '<tr ';
+                            var url = data.url[idx];
+                            if (url){
+                                html += " class='clickable-row' data-url='"+ url +"' ";
+                            }
+                            html += '>';
 
                             var first_iteration = true;
 
@@ -90,7 +96,7 @@ var run = false;
                                     value = ''
                                 }
 
-                                if (first_iteration) {
+                                if (first_iteration && data.url[idx]) {
                                     html += '<td style="display:none;">' + value + '</td>';
                                     first_iteration = false;
                                 } else {
@@ -107,8 +113,11 @@ var run = false;
                     run = false;
 
                     $(".clickable-row").click(function (event) {
-                        var id = $(this).children(":first").html();
-                        window.location.href = thisClass.detailUrl+'/'+id;
+                        var url = $(this).data('url');
+                        if (url){
+                            var id = $(this).children(":first").html();
+                            window.location.href = url+'/'+id;
+                        }
                     });
                 },
                 error:function (error) {
