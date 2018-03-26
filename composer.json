@@ -1,18 +1,29 @@
 {
-  "name" : "symon-white/grid-bundle-s3",
+  "name" : "vs-point/grid-bundle",
   "type" : "symfony-bundle",
   "description" : "Ajax grid for Symfony3",
   "keywords" : [
     "datagrid",
     "grid"
   ],
-  "homepage" : "http://github.com/pedro-teixeira/grid-bundle",
+  "homepage" : "https://github.com/vs-point/grid-bundle",
   "license" : "MIT",
   "authors" : [
     {
       "name" : "Pedro Teixeira",
       "email" : "hello@pedroteixeira.io",
       "homepage" : "https://pedroteixeira.io"
+    },
+    {
+      "name" : "Tomáš Pokorný",
+      "email" : "pokorny.tomas@vs-point.cz",
+      "homepage" : "https://www.vs-point.cz"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/vs-point/grid-bundle"
     }
   ],
   "require" : {
