@@ -57,7 +57,7 @@ abstract class OperatorAbstract
         $this->index = $index;
 
         $this->setIndexClean(
-            str_replace('.', '', $index)
+            preg_replace('/[^A-Za-z0-9\-]/', '', $index)
         );
 
         return $this;
