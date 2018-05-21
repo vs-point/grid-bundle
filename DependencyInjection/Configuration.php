@@ -65,7 +65,7 @@ class Configuration implements ConfigurationInterface
                                         ->defaultValue(true)
                                     ->end()
                                     ->scalarNode('path')
-                                        ->defaultValue('/tmp/')
+                                        ->defaultValue(sys_get_temp_dir())
                                     ->end()
                                 ->end()
                             ->end()

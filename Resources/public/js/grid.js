@@ -63,7 +63,11 @@ var run = false;
                     thisClass.gridUnlock()
 
                     if (data.file_hash) {
-                        window.location = thisClass.ajaxUrl + '?export=1&file_hash=' + data.file_hash
+                        if(thisClass.ajaxUrl.indexOf('?')>=0) {
+                            window.location = thisClass.ajaxUrl + '&export=1&file_hash=' + data.file_hash
+                        } else {
+                            window.location = thisClass.ajaxUrl + '?export=1&file_hash=' + data.file_hash
+                        }
                         return
                     }
 
