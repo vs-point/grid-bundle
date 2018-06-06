@@ -77,6 +77,11 @@ abstract class GridAbstract
     protected $name;
 
     /**
+     * @var int
+     */
+    protected $defaultLimit;
+
+    /**
      * Setup grid, the place to add columns and options
      */
     abstract public function setupGrid();
@@ -101,6 +106,7 @@ abstract class GridAbstract
         $this->ajax = $this->request->isXmlHttpRequest() ? true : false;
 
         $this->exportable = $this->container->getParameter('pedro_teixeira_grid.export.enabled');
+        $this->defaultLimit = $this->container->getParameter('pedro_teixeira_grid.pagination.limit');
         $this->export = $this->request->query->get('export', false);
         $this->fileHash = $this->request->query->get('file_hash', null);
         if (is_null($this->fileHash)) {
@@ -279,10 +285,8 @@ abstract class GridAbstract
      */
     public function getData()
     {
-        $defaultLimit = $this->container->getParameter('pedro_teixeira_grid.pagination.limit');
-
         $page       = $this->request->query->get('page', 1);
-        $limit      = $this->request->query->get('limit', $defaultLimit);
+        $limit      = $this->request->query->get('limit', $this->defaultLimit);
         $sortIndex  = $this->request->query->get('sort');
         $sortOrder  = $this->request->query->get('sort_order');
         $filters    = $this->request->query->get('filters', array());
@@ -291,7 +295,7 @@ abstract class GridAbstract
         $page = ($page <= 0 ? 1 : $page);
 
         $limit = intval(abs($limit));
-        $limit = ($limit <= 0 ? $defaultLimit : $limit);
+        $limit = ($limit <= 0 ? $this->defaultLimit : $limit);
 
         /** @todo Remove the unnecessary iterations */
 
@@ -520,3 +524,4 @@ abstract class GridAbstract
         return $response;
     }
 }
+
