@@ -61,7 +61,22 @@ abstract class GridAbstract
      */
     protected $exportable;
 
-    /**
+	/**
+	 * @var bool
+	 */
+    protected $searchable;
+
+	/**
+	 * @var string
+	 */
+	protected $search;
+
+	/**
+	 * @var string
+	 */
+	protected $exportType;
+
+	/**
      * @var bool
      */
     protected $export;
@@ -105,13 +120,18 @@ abstract class GridAbstract
 
         $this->ajax = $this->request->isXmlHttpRequest() ? true : false;
 
+	    $this->searchable = true;
+	    $this->search = $this->request->query->get('search', null);;
         $this->exportable = $this->container->getParameter('pedro_teixeira_grid.export.enabled');
         $this->defaultLimit = $this->container->getParameter('pedro_teixeira_grid.pagination.limit');
         $this->export = $this->request->query->get('export', false);
+	    $this->exportType = $this->request->query->get('exportType', '');
         $this->fileHash = $this->request->query->get('file_hash', null);
         if (is_null($this->fileHash)) {
             $this->fileHash = uniqid();
         }
+
+        error_log('............... constructor '.$this->search);
 
         $now = new \DateTime();
         $this->name = md5($now->format('Y-m-d H:i:s:u'));
@@ -290,6 +310,7 @@ abstract class GridAbstract
         $sortIndex  = $this->request->query->get('sort');
         $sortOrder  = $this->request->query->get('sort_order');
         $filters    = $this->request->query->get('filters', array());
+        $search     = $this->request->query->get('search');
 
         $page = intval(abs($page));
         $page = ($page <= 0 ? 1 : $page);
@@ -317,16 +338,48 @@ abstract class GridAbstract
             }
         }
 
+        // or for global search
+	    $qb = $this->getQueryBuilder();
+	    $orX = $qb->expr()->orX();
+
         foreach ($filters as $filter) {
-            /** @var \PedroTeixeira\Bundle\GridBundle\Grid\Column $column */
-            foreach ($this->columns as $column) {
-                if ($filter['name'] == $column->getIndex() && $filter['value'] != '') {
+
+	        /** @var \PedroTeixeira\Bundle\GridBundle\Grid\Column $column */
+	        foreach ($this->columns as $column) {
+	            if ($filter['name'] == $column->getIndex() && $filter['value'] != '') {
                     $column->getFilter()->execute($this->getQueryBuilder(), $filter['value']);
                 }
             }
+
+            if (strlen($search) > 0){
+
+
+	            /** @var \PedroTeixeira\Bundle\GridBundle\Grid\Column $column */
+		        foreach ($this->columns as $column) {
+
+			        if ($filter['name'] == $column->getIndex()) {
+
+			        	$colIndex = $column->getIndex();
+
+//			        	// TODO sql LIKE cant be used on multiple collumns, temp fix - split
+			        	if (strpos($colIndex, ',') !== false) {
+					        foreach ( explode(',',$colIndex ) as $colIndexPart){
+						        $orX->add($qb->expr()->like($colIndexPart, ':search'));
+					        }
+				        } else {
+					        $orX->add($qb->expr()->like($colIndex, ':search'));
+				        }
+			        }
+		        }
+            }
         }
 
-        if ($sortIndex) {
+        if ($orX->count() > 0){
+	        $qb->add('where', $orX);
+	        $qb->setparameter('search', '%' . $search . '%');
+        }
+
+	    if ($sortIndex) {
             $this->getQueryBuilder()->orderBy($sortIndex, $sortOrder);
         }
 
@@ -468,7 +521,8 @@ abstract class GridAbstract
         fclose($fileHandler);
 
         return array(
-            'file_hash' => $this->fileHash
+	        'exportType' => $this->getExportType(),
+	        'file_hash' => $this->fileHash,
         );
     }
 
@@ -523,5 +577,36 @@ abstract class GridAbstract
 
         return $response;
     }
+
+
+	/**
+	 * @param bool $searchable
+	 *
+	 * @return GridAbstract
+	 */
+	public function setSearchable(bool $searchable): GridAbstract
+	{
+		$this->searchable = $searchable;
+
+		return $this;
+}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isSearchable(): bool
+	{
+		return $this->searchable;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getExportType(): string
+	{
+		return $this->exportType;
+	}
 }
 

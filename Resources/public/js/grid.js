@@ -12,6 +12,8 @@ var run = false;
         this.ajaxUrl = this.options.ajaxUrl || this.ajaxUrl
         this.limit = this.options.limit || this.limit
         this.exportFlag = false
+        this.exportType = ''
+        this.search = ''
         this.sortIndex = ''
         this.sortOrder = 'ASC'
         this.page = 1
@@ -26,8 +28,6 @@ var run = false;
         constructor:Grid
 
         , ajax:function () {
-
-            console.log("run: " + run);
             // TODO
             // if(run) {
             //     console.log("run: is true, stopping");
@@ -43,6 +43,8 @@ var run = false;
             this.page = this.$element.find('#pagination #pagination-page').val()
             this.limit = this.$element.find('#pagination #pagination-limit').val()
 
+            this.search = this.$element.find('#global-search').val()
+
             $.ajax({
                 url:this.ajaxUrl,
                 type:'get',
@@ -52,7 +54,9 @@ var run = false;
                     'sort': this.sortIndex,
                     'sort_order': this.sortOrder,
                     'export': (this.exportFlag ? 1 : 0),
-                    'filters': filters
+                    'exportType': this.exportType,
+                    'filters': filters,
+                    'search': this.search
                 },
                 dataType:'json',
                 timeout: (this.exportFlag ? (5*60*1000) : (10 * 1000)),
@@ -64,9 +68,9 @@ var run = false;
 
                     if (data.file_hash) {
                         if(thisClass.ajaxUrl.indexOf('?')>=0) {
-                            window.location = thisClass.ajaxUrl + '&export=1&file_hash=' + data.file_hash
+                            window.location = thisClass.ajaxUrl + '&export=1&file_hash=' + data.file_hash + '&exportType=' + thisClass.exportType
                         } else {
-                            window.location = thisClass.ajaxUrl + '?export=1&file_hash=' + data.file_hash
+                            window.location = thisClass.ajaxUrl + '?export=1&file_hash=' + data.file_hash + '&exportType=' + thisClass.exportType
                         }
                         return
                     }
@@ -145,6 +149,7 @@ var run = false;
             this.$element.find('#refresh-button').on('click', $.proxy(this.ajax, this))
             this.$element.find('#refresh-filters-button').on('click', $.proxy(this.refreshFilters, this))
             this.$element.find('#export-button').on('click', $.proxy(this.export, this))
+            this.$element.find('#export-pdf-button').on('click', $.proxy(this.exportPdf, this))
             this.$element.find('#row-filters-label th').on('click', $.proxy(this.processOrder, this))
 
             this.$element.find('#pagination-back-button').on('click', $.proxy(this.paginationBack, this))
@@ -176,6 +181,16 @@ var run = false;
 
         , export:function () {
             this.exportFlag = true
+            this.exportType = 'default'
+            this.ajax()
+            this.exportFlag = false
+
+            return this
+        }
+
+        , exportPdf:function () {
+            this.exportFlag = true
+            this.exportType = 'pdf'
             this.ajax()
             this.exportFlag = false
 

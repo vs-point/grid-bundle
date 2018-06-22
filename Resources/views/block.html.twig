@@ -42,6 +42,13 @@
                                 <button id="export-button" class="btn btn-default btn-xs" type="button">
                                     <i class="glyphicon glyphicon-download"></i> {% trans %}Export{% endtrans %}
                                 </button>
+                                <button id="export-pdf-button" class="btn btn-default btn-xs" type="button">
+                                    <i class="glyphicon glyphicon-download"></i> {% trans %}Export PDF{% endtrans %}
+                                </button>
+                            {% endif %}
+
+                            {% if view.grid.searchable %}
+                                <input type="text" placeholder="Search.." name="search" id="global-search">
                             {% endif %}
 
                             <div id="pagination" class="pull-right">

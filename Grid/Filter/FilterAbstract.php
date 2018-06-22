@@ -223,9 +223,13 @@ abstract class FilterAbstract
      * @param \Doctrine\ORM\QueryBuilder $queryBuilder
      * @param array|string               $value
      */
-    public function execute(\Doctrine\ORM\QueryBuilder $queryBuilder, $value)
+    public function execute(\Doctrine\ORM\QueryBuilder $queryBuilder, $value, $where = null)
     {
-        $this->getOperator()
+        $operator = $this->getOperator();
+		if($where){
+			$operator->setWhere($where);
+		}
+	    $operator
             ->setQueryBuilder($queryBuilder)
             ->execute($value);
     }
