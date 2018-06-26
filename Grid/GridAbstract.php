@@ -131,7 +131,6 @@ abstract class GridAbstract
             $this->fileHash = uniqid();
         }
 
-        error_log('............... constructor '.$this->search);
 
         $now = new \DateTime();
         $this->name = md5($now->format('Y-m-d H:i:s:u'));
@@ -353,7 +352,6 @@ abstract class GridAbstract
 
             if (strlen($search) > 0){
 
-
 	            /** @var \PedroTeixeira\Bundle\GridBundle\Grid\Column $column */
 		        foreach ($this->columns as $column) {
 
@@ -361,11 +359,9 @@ abstract class GridAbstract
 
 			        	$colIndex = $column->getIndex();
 
-//			        	// TODO sql LIKE cant be used on multiple collumns, temp fix - split
 			        	if (strpos($colIndex, ',') !== false) {
-					        foreach ( explode(',',$colIndex ) as $colIndexPart){
-						        $orX->add($qb->expr()->like($colIndexPart, ':search'));
-					        }
+			        		$parts = explode(',',$colIndex );
+					        $orX->add($qb->expr()->like("CONCAT($parts[0],' ',$parts[1]) ", ':search'));
 				        } else {
 					        $orX->add($qb->expr()->like($colIndex, ':search'));
 				        }
@@ -375,7 +371,7 @@ abstract class GridAbstract
         }
 
         if ($orX->count() > 0){
-	        $qb->add('where', $orX);
+	        $qb->andWhere($orX);
 	        $qb->setparameter('search', '%' . $search . '%');
         }
 
