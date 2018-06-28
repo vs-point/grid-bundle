@@ -4,9 +4,7 @@ namespace PedroTeixeira\Bundle\GridBundle\Grid;
 
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
-
 use Doctrine\ORM\Tools\Pagination\Paginator;
-
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,8 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Grid Abstract
  */
-abstract class GridAbstract
-{
+abstract class GridAbstract {
+
     /**
      * @var Container
      */
@@ -59,24 +57,19 @@ abstract class GridAbstract
     /**
      * @var bool
      */
-    protected $exportable;
-
-	/**
-	 * @var bool
-	 */
     protected $searchable;
 
-	/**
-	 * @var string
-	 */
-	protected $search;
+    /**
+     * @var string
+     */
+    protected $search;
 
-	/**
-	 * @var string
-	 */
-	protected $exportType;
+    /**
+     * @var int
+     */
+    protected $exportType;
 
-	/**
+    /**
      * @var bool
      */
     protected $export;
@@ -97,6 +90,12 @@ abstract class GridAbstract
     protected $defaultLimit;
 
     /**
+     * Exports array
+     * @var type 
+     */
+    private $exports;
+
+    /**
      * Setup grid, the place to add columns and options
      */
     abstract public function setupGrid();
@@ -107,64 +106,75 @@ abstract class GridAbstract
      *
      * @return \PedroTeixeira\Bundle\GridBundle\Grid\GridAbstract
      */
-    public function __construct(Container $container, Request $request)
-    {
+    public function __construct(Container $container, Request $request) {
+
         $this->container = $container;
         $this->request = $request;
 
         $this->router = $this->container->get('router');
         $this->templating = $this->container->get('templating');
 
+        $now = new \DateTime();
+        $this->name = md5($now->format('Y-m-d H:i:s:u'));
         $this->columns = array();
         $this->url = null;
 
         $this->ajax = $this->request->isXmlHttpRequest() ? true : false;
 
-	    $this->searchable = true;
-	    $this->search = $this->request->query->get('search', null);;
-        $this->exportable = $this->container->getParameter('pedro_teixeira_grid.export.enabled');
+        $this->searchable = true;
+        $this->search = $this->request->query->get('search', null);
         $this->defaultLimit = $this->container->getParameter('pedro_teixeira_grid.pagination.limit');
-        $this->export = $this->request->query->get('export', false);
-	    $this->exportType = $this->request->query->get('exportType', '');
+
         $this->fileHash = $this->request->query->get('file_hash', null);
         if (is_null($this->fileHash)) {
             $this->fileHash = uniqid();
         }
 
+        //load default export
+        $this->export = $this->request->query->get('export', false);
+        $this->exportType = $this->request->query->get('exportType', null);
+    }
 
-        $now = new \DateTime();
-        $this->name = md5($now->format('Y-m-d H:i:s:u'));
+    public function addExportType($exportClassType) {
+        $exportClass = new $exportClassType($this->container,$this);
+        if($exportClass instanceof Export\ExportAbstract) {
+            $this->exports[] = $exportClass;
+        }
+    }
+
+    public function clearExportType() {
+        $this->exports = array();
+    }
+
+    public function getExports() {
+        return $this->exports;
     }
 
     /**
      * @return Container
      */
-    public function getContainer()
-    {
+    public function getContainer() {
         return $this->container;
     }
 
     /**
      * @return bool If true (Ajax Request), returns json. Else (Regular request), renders html
      */
-    public function isAjax()
-    {
+    public function isAjax() {
         return $this->ajax;
     }
 
     /**
      * @return bool Check if it's an export call
      */
-    public function isExport()
-    {
+    public function isExport() {
         return $this->export;
     }
 
     /**
      * @return bool
      */
-    public function isResponseAnswer()
-    {
+    public function isResponseAnswer() {
         return ($this->isAjax() || $this->isExport());
     }
 
@@ -173,8 +183,7 @@ abstract class GridAbstract
      *
      * @return GridAbstract
      */
-    public function setName($name)
-    {
+    public function setName($name) {
         $this->name = $name;
 
         return $this;
@@ -183,8 +192,7 @@ abstract class GridAbstract
     /**
      * @return string
      */
-    public function getName()
-    {
+    public function getName() {
         return $this->name;
     }
 
@@ -193,8 +201,7 @@ abstract class GridAbstract
      *
      * @return GridAbstract
      */
-    public function setUrl($url)
-    {
+    public function setUrl($url) {
         $this->url = $url;
 
         return $this;
@@ -203,8 +210,7 @@ abstract class GridAbstract
     /**
      * @return string
      */
-    public function getUrl()
-    {
+    public function getUrl() {
         if (!$this->url) {
             $this->url = $this->router->generate($this->request->get('_route'));
         }
@@ -213,23 +219,10 @@ abstract class GridAbstract
     }
 
     /**
-     * @param boolean $exportable
-     *
-     * @return GridAbstract
-     */
-    public function setExportable($exportable)
-    {
-        $this->exportable = $exportable;
-
-        return $this;
-    }
-
-    /**
      * @return boolean
      */
-    public function getExportable()
-    {
-        return $this->exportable;
+    public function getExportable() {
+        return (count($this->exports) > 0) ? true : false;
     }
 
     /**
@@ -237,8 +230,7 @@ abstract class GridAbstract
      *
      * @return GridAbstract
      */
-    public function setQueryBuilder(QueryBuilder $queryBuilder)
-    {
+    public function setQueryBuilder(QueryBuilder $queryBuilder) {
         $this->queryBuilder = $queryBuilder;
 
         return $this;
@@ -247,8 +239,7 @@ abstract class GridAbstract
     /**
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function getQueryBuilder()
-    {
+    public function getQueryBuilder() {
         return $this->queryBuilder;
     }
 
@@ -257,8 +248,7 @@ abstract class GridAbstract
      *
      * @return Column
      */
-    public function addColumn($name)
-    {
+    public function addColumn($name) {
         $column = new Column($this->container, $name);
 
         $this->columns[] = $column;
@@ -271,8 +261,7 @@ abstract class GridAbstract
      *
      * @return array
      */
-    public function getColumns()
-    {
+    public function getColumns() {
         return $this->columns;
     }
 
@@ -281,20 +270,8 @@ abstract class GridAbstract
      *
      * @return int
      */
-    public function getColumnsCount()
-    {
+    public function getColumnsCount() {
         return count($this->getColumns());
-    }
-
-    /**
-     * @return string
-     */
-    protected function getExportFileName()
-    {
-        $exportPath = $this->container->getParameter('pedro_teixeira_grid.export.path');
-        $exportFile = $exportPath . $this->getName() . '_' . $this->fileHash . '.csv';
-
-        return $exportFile;
     }
 
     /**
@@ -302,14 +279,13 @@ abstract class GridAbstract
      *
      * @return array
      */
-    public function getData()
-    {
-        $page       = $this->request->query->get('page', 1);
-        $limit      = $this->request->query->get('limit', $this->defaultLimit);
-        $sortIndex  = $this->request->query->get('sort');
-        $sortOrder  = $this->request->query->get('sort_order');
-        $filters    = $this->request->query->get('filters', array());
-        $search     = $this->request->query->get('search');
+    public function getData() {
+        $page = $this->request->query->get('page', 1);
+        $limit = $this->request->query->get('limit', $this->defaultLimit);
+        $sortIndex = $this->request->query->get('sort');
+        $sortOrder = $this->request->query->get('sort_order');
+        $filters = $this->request->query->get('filters', array());
+        $search = $this->request->query->get('search');
 
         $page = intval(abs($page));
         $page = ($page <= 0 ? 1 : $page);
@@ -318,7 +294,6 @@ abstract class GridAbstract
         $limit = ($limit <= 0 ? $this->defaultLimit : $limit);
 
         /** @todo Remove the unnecessary iterations */
-
         // Check and change cascade array in get
         foreach ($filters as $key => $filter) {
             if (strpos($filter['name'], '[]') !== false) {
@@ -338,44 +313,44 @@ abstract class GridAbstract
         }
 
         // or for global search
-	    $qb = $this->getQueryBuilder();
-	    $orX = $qb->expr()->orX();
+        $qb = $this->getQueryBuilder();
+        $orX = $qb->expr()->orX();
 
         foreach ($filters as $filter) {
 
-	        /** @var \PedroTeixeira\Bundle\GridBundle\Grid\Column $column */
-	        foreach ($this->columns as $column) {
-	            if ($filter['name'] == $column->getIndex() && $filter['value'] != '') {
+            /** @var \PedroTeixeira\Bundle\GridBundle\Grid\Column $column */
+            foreach ($this->columns as $column) {
+                if ($filter['name'] == $column->getIndex() && $filter['value'] != '') {
                     $column->getFilter()->execute($this->getQueryBuilder(), $filter['value']);
                 }
             }
 
-            if (strlen($search) > 0){
+            if (strlen($search) > 0) {
 
-	            /** @var \PedroTeixeira\Bundle\GridBundle\Grid\Column $column */
-		        foreach ($this->columns as $column) {
+                /** @var \PedroTeixeira\Bundle\GridBundle\Grid\Column $column */
+                foreach ($this->columns as $column) {
 
-			        if ($filter['name'] == $column->getIndex()) {
+                    if ($filter['name'] == $column->getIndex()) {
 
-			        	$colIndex = $column->getIndex();
+                        $colIndex = $column->getIndex();
 
-			        	if (strpos($colIndex, ',') !== false) {
-			        		$parts = explode(',',$colIndex );
-					        $orX->add($qb->expr()->like("CONCAT($parts[0],' ',$parts[1]) ", ':search'));
-				        } else {
-					        $orX->add($qb->expr()->like($colIndex, ':search'));
-				        }
-			        }
-		        }
+                        if (strpos($colIndex, ',') !== false) {
+                            $parts = explode(',', $colIndex);
+                            $orX->add($qb->expr()->like("CONCAT($parts[0],' ',$parts[1]) ", ':search'));
+                        } else {
+                            $orX->add($qb->expr()->like($colIndex, ':search'));
+                        }
+                    }
+                }
             }
         }
 
-        if ($orX->count() > 0){
-	        $qb->andWhere($orX);
-	        $qb->setparameter('search', '%' . $search . '%');
+        if ($orX->count() > 0) {
+            $qb->andWhere($orX);
+            $qb->setparameter('search', '%' . $search . '%');
         }
 
-	    if ($sortIndex) {
+        if ($sortIndex) {
             $this->getQueryBuilder()->orderBy($sortIndex, $sortOrder);
         }
 
@@ -391,19 +366,19 @@ abstract class GridAbstract
             $queryOffset = (($page * $limit) - $limit);
 
             $this->getQueryBuilder()
-                ->setFirstResult($queryOffset)
-                ->setMaxResults($limit);
+                    ->setFirstResult($queryOffset)
+                    ->setMaxResults($limit);
 
             $response = array(
-                'page'       => $page,
+                'page' => $page,
                 'page_count' => $totalPages,
                 'page_limit' => $limit,
-                'row_count'  => $totalCount,
-                'rows'       => array()
+                'row_count' => $totalCount,
+                'rows' => array()
             );
         } else {
             $response = array(
-                'rows'       => array()
+                'rows' => array()
             );
         }
 
@@ -446,19 +421,18 @@ abstract class GridAbstract
                 } elseif ($column->getTwig()) {
 
                     $rowColumn = $this->templating->render(
-                        $column->getTwig(),
-                        array(
-                            'row' => $row
-                        )
+                            $column->getTwig(), array(
+                        'row' => $row
+                            )
                     );
                 }
 
                 $rowValue[$column->getField()] = $column->getRender()
-                    ->setValue($rowColumn)
-                    ->setStringOnly($this->isExport())
-                    ->render();
+                        ->setValue($rowColumn)
+                        ->setStringOnly($this->isExport())
+                        ->render();
 
-                if ($column->getUrl()){
+                if ($column->getUrl()) {
                     $response['url'][$key] = $column->getUrl();
                 }
             }
@@ -472,54 +446,31 @@ abstract class GridAbstract
     /**
      * @return array
      */
-    public function processGrid()
-    {
+    public function processGrid() {
         return $this->getData();
     }
 
     /**
      * @return array
      */
-    public function processExport()
-    {
+    public function processExport() {
         set_time_limit(0);
+        return $this->exports[$this->exportType]->process();
+    }
 
-        $exportFile = $this->getExportFileName();
+    /**
+     * @return string
+     */
+    public function getExportFileName() {
+        return $this->exports[$this->exportType]->getFilename();
+    }
 
-        $fileHandler = fopen($exportFile, 'w');
-
-        $columnsHeader = array();
-
-        /** @var Column $column */
-        foreach ($this->getColumns() as $column) {
-            if (!$column->getTwig()) {
-                $columnsHeader[$column->getField()] = $column->getName();
-            }
-        }
-
-        fputcsv($fileHandler, $columnsHeader);
-
-        $data = $this->getData();
-
-        foreach ($data['rows'] as $row) {
-
-            $rowContent = array();
-
-            foreach ($row as $key => $column) {
-                if (isset($columnsHeader[$key])) {
-                    $rowContent[] = $column;
-                }
-            }
-
-            fputcsv($fileHandler, $rowContent);
-        }
-
-        fclose($fileHandler);
-
-        return array(
-	        'exportType' => $this->getExportType(),
-	        'file_hash' => $this->fileHash,
-        );
+    /**
+     * 
+     * @return Symfony\Component\HttpFoundation\Response
+     */
+    public function downloadExportedFile() {
+        return $this->exports[$this->exportType]->getDownloadResponse();
     }
 
     /**
@@ -528,8 +479,7 @@ abstract class GridAbstract
      * @throws \Exception
      * @return GridView | \Symfony\Component\HttpFoundation\Response
      */
-    public function render()
-    {
+    public function render() {
         if ($this->isAjax()) {
             if ($this->isExport()) {
 
@@ -563,46 +513,33 @@ abstract class GridAbstract
         }
     }
 
-    public function downloadExportedFile(){
-        $exportFile = $this->getExportFileName();
+    /**
+     * @param bool $searchable
+     *
+     * @return GridAbstract
+     */
+    public function setSearchable(bool $searchable): GridAbstract {
+        $this->searchable = $searchable;
 
-        $response = new Response();
-        $response->headers->set('Content-Type', 'text/csv');
-        $response->headers->set('Content-Disposition', 'attachment; filename="' . basename($exportFile) . '"');
-        $response->setContent(file_get_contents($exportFile));
-
-        return $response;
+        return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function isSearchable(): bool {
+        return $this->searchable;
+    }
 
-	/**
-	 * @param bool $searchable
-	 *
-	 * @return GridAbstract
-	 */
-	public function setSearchable(bool $searchable): GridAbstract
-	{
-		$this->searchable = $searchable;
+    /**
+     * @return string
+     */
+    public function getExportType(): string {
+        return $this->exportType;
+    }
+    
+    public function getFileHash() : string {
+        return $this->fileHash;
+    }
 
-		return $this;
 }
-
-
-	/**
-	 * @return bool
-	 */
-	public function isSearchable(): bool
-	{
-		return $this->searchable;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getExportType(): string
-	{
-		return $this->exportType;
-	}
-}
-

@@ -37,18 +37,17 @@
                             <button id="refresh-filters-button" class="btn btn-default btn-xs" type="button">
                                 <i class="glyphicon glyphicon-filter"></i> {% trans %}Refresh Filters{% endtrans %}
                             </button>
-
+                            
                             {% if view.grid.exportable %}
-                                <button id="export-button" class="btn btn-default btn-xs" type="button">
-                                    <i class="glyphicon glyphicon-download"></i> {% trans %}Export{% endtrans %}
-                                </button>
-                                <button id="export-pdf-button" class="btn btn-default btn-xs" type="button">
-                                    <i class="glyphicon glyphicon-download"></i> {% trans %}Export PDF{% endtrans %}
-                                </button>
+                                {% for key,export in view.grid.exports %}
+                                    <button data-id="{{ key }}" class="export-button btn btn-default btn-xs" type="button">
+                                        <i class="glyphicon glyphicon-download"></i> {{ export.name }}
+                                    </button>
+                                {% endfor %}
                             {% endif %}
 
                             {% if view.grid.searchable %}
-                                <input type="text" placeholder="Search.." name="search" id="global-search">
+                                <input type="text" placeholder="{% trans %}Fulltext Search{% endtrans %}" name="search" id="global-search">
                             {% endif %}
 
                             <div id="pagination" class="pull-right">

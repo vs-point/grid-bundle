@@ -148,8 +148,7 @@ var run = false;
 
             this.$element.find('#refresh-button').on('click', $.proxy(this.ajax, this))
             this.$element.find('#refresh-filters-button').on('click', $.proxy(this.refreshFilters, this))
-            this.$element.find('#export-button').on('click', $.proxy(this.export, this))
-            this.$element.find('#export-pdf-button').on('click', $.proxy(this.exportPdf, this))
+            this.$element.find('.export-button').on('click',$.proxy(this.export, this))
             this.$element.find('#row-filters-label th').on('click', $.proxy(this.processOrder, this))
 
             this.$element.find('#pagination-back-button').on('click', $.proxy(this.paginationBack, this))
@@ -179,18 +178,10 @@ var run = false;
             return this
         }
 
-        , export:function () {
+        , export:function (event) {
             this.exportFlag = true
-            this.exportType = 'default'
-            this.ajax()
-            this.exportFlag = false
-
-            return this
-        }
-
-        , exportPdf:function () {
-            this.exportFlag = true
-            this.exportType = 'pdf'
+            this.exportType = event.target.dataset.id
+            console.log(this.exportType)
             this.ajax()
             this.exportFlag = false
 

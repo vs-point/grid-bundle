@@ -18,6 +18,11 @@
       "name" : "Tomáš Pokorný",
       "email" : "pokorny.tomas@vs-point.cz",
       "homepage" : "https://www.vs-point.cz"
+    },
+    {
+      "name" : "Vít Steklý",
+      "email" : "stekly.vit@vs-point.cz",
+      "homepage" : "https://www.vs-point.cz"
     }
   ],
   "repositories": [

@@ -78,7 +78,6 @@
             pagination:
                 limit:              20
             export:
-                enabled:            true
                 path:               '/tmp/'
     ```
 
@@ -96,6 +95,7 @@
     namespace PedroTeixeira\Bundle\TestBundle\Grid;
 
     use PedroTeixeira\Bundle\GridBundle\Grid\GridAbstract;
+    use PedroTeixeira\Bundle\GridBundle\Grid\Export;
 
     /**
      * Test Grid
@@ -146,6 +146,9 @@
             $this->addColumn('Action')
                 ->setTwig('PedroTeixeiraTestBundle:Test:gridAction.html.twig')
                 ->setFilterType(false);
+
+            
+            $this->addExportType(Export\ExportCsv::class);
         }
     }
     ```
@@ -213,7 +216,21 @@
     {{ pedroteixeira_grid_js(grid) }}
     ````
     
-   
+## Export to Excel or PDF
+
+If you want add posibility for export to Excel or PDF, add to your setupGrid method these lines:
+
+```
+$this->addExportType(Export\ExportPdf::class);
+$this->addExportType(Export\ExportXlsx::class);
+```
+
+Don't miss install external dependencies via composer:
+
+```
+composer install mpdf/mpdf
+composer install phpoffice/phpspreadsheet
+```
 
 ## Understanding
 
