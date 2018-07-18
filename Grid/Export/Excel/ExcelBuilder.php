@@ -35,7 +35,7 @@ class ExcelBuilder {
 
     public function addHeader(array $values) {
 
-        $this->lastCol = range('A', 'Z', count($values) - 1)[1];
+        $this->lastCol = $this->getNameFromNumber(count($values));
 
         $row = $this->rowIndex;
         $col = $this->firstCol;
@@ -79,6 +79,7 @@ class ExcelBuilder {
     public function saveToFilePdf($filename) {
         $writer = new CustomMpdf($this->spreadsheet);
         $writer->setHeader($this->name);
+        $writer->setPaperSize(PageSetup::PAPERSIZE_A3);
         $writer->save($filename);
     }
 
@@ -109,7 +110,7 @@ class ExcelBuilder {
     private function setColors() {
         // horizontal line
         $headerCells = $this->firstCol . $this->firstRow . ':' . $this->lastCol . $this->firstRow;
-        
+
         // header color
         $this->sheet->getStyle($headerCells)
                 ->getFill()
@@ -140,6 +141,17 @@ class ExcelBuilder {
 
     public function setName($name) {
         $this->name = $name;
+    }
+
+    private function getNameFromNumber($num) {
+        $numeric = ($num - 1) % 26;
+        $letter = chr(65 + $numeric);
+        $num2 = intval(($num - 1) / 26);
+        if ($num2 > 0) {
+            return $this->getNameFromNumber($num2) . $letter;
+        } else {
+            return $letter;
+        }
     }
 
 }

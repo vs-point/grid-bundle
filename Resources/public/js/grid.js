@@ -97,19 +97,12 @@ var run = false;
                             }
                             html += '>';
 
-                            var first_iteration = true;
-
                             $.each(item, function (i, value) {
                                 if (value == null) {
                                     value = ''
                                 }
 
-                                if (first_iteration && data.url[idx]) {
-                                    html += '<td style="display:none;">' + value + '</td>';
-                                    first_iteration = false;
-                                } else {
-                                    html += '<td>' + value + '</td>'
-                                }
+                                html += '<td>' + value + '</td>'
                             });
                             html += '</tr>'
                         })

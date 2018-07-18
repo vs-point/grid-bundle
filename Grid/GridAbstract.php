@@ -91,7 +91,7 @@ abstract class GridAbstract {
 
     /**
      * Exports array
-     * @var type 
+     * @var type
      */
     private $exports;
 
@@ -312,12 +312,7 @@ abstract class GridAbstract {
             }
         }
 
-        // or for global search
-        $qb = $this->getQueryBuilder();
-        $orX = $qb->expr()->orX();
-
         foreach ($filters as $filter) {
-
             /** @var \PedroTeixeira\Bundle\GridBundle\Grid\Column $column */
             foreach ($this->columns as $column) {
                 if ($filter['name'] == $column->getIndex() && $filter['value'] != '') {
@@ -325,25 +320,32 @@ abstract class GridAbstract {
                 }
             }
 
-            if (strlen($search) > 0) {
 
-                /** @var \PedroTeixeira\Bundle\GridBundle\Grid\Column $column */
-                foreach ($this->columns as $column) {
-
-                    if ($filter['name'] == $column->getIndex()) {
-
-                        $colIndex = $column->getIndex();
-
-                        if (strpos($colIndex, ',') !== false) {
-                            $parts = explode(',', $colIndex);
-                            $orX->add($qb->expr()->like("CONCAT($parts[0],' ',$parts[1]) ", ':search'));
-                        } else {
-                            $orX->add($qb->expr()->like($colIndex, ':search'));
-                        }
-                    }
-                }
-            }
         }
+
+        // or for global search
+	    $qb = $this->getQueryBuilder();
+	    $orX = $qb->expr()->orX();
+
+	    if (strlen($search) > 0) {
+
+		    /** @var \PedroTeixeira\Bundle\GridBundle\Grid\Column $column */
+		    foreach ($this->columns as $column) {
+
+		        if ($column->getHidden()){
+		            continue;
+                }
+
+                $colIndex = $column->getIndex();
+
+                if (strpos($colIndex, ',') !== false) {
+                    $parts = explode(',', $colIndex);
+                    $orX->add($qb->expr()->like("CONCAT($parts[0],' ',$parts[1]) ", ':search'));
+                } else {
+                    $orX->add($qb->expr()->like($colIndex, ':search'));
+                }
+		    }
+	    }
 
         if ($orX->count() > 0) {
             $qb->andWhere($orX);
@@ -466,7 +468,7 @@ abstract class GridAbstract {
     }
 
     /**
-     * 
+     *
      * @return Symfony\Component\HttpFoundation\Response
      */
     public function downloadExportedFile() {
@@ -537,7 +539,7 @@ abstract class GridAbstract {
     public function getExportType(): string {
         return $this->exportType;
     }
-    
+
     public function getFileHash() : string {
         return $this->fileHash;
     }
